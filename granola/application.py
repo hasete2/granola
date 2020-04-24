@@ -9,5 +9,5 @@ class WSGIApplication(object):
     def __call__(self, environ, start_response):
 
         _path = environ['PATH_INFO']
-        _h = self.__urls.get(_path, NotFoundHandler(environ, start_response))
-        return _h(environ, start_response)
+        _h = self.__urls.get(_path, NotFoundHandler())
+        return _h.entry(environ, start_response)

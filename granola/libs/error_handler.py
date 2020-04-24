@@ -10,5 +10,5 @@ class NotFoundHandler(RequestHandler):
         return self.__request()
 
     def __request(self):
-        self.set_status_code(404)
+        self.status_code = 404
         return '404 NotFound'
