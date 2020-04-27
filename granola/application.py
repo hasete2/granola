@@ -10,4 +10,5 @@ class WSGIApplication(object):
 
         _path = environ['PATH_INFO']
         _h = self.__urls.get(_path, NotFoundHandler())
+        _h.__new__
         return _h.entry(environ, start_response)

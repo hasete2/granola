@@ -5,7 +5,7 @@ from granola.libs.request_handler import RequestHandler
 
 class JsonHandler(RequestHandler):
 
-    def __init__(self):
+    def initialize(self):
         pass
 
     def get(self):
