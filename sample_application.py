@@ -7,9 +7,6 @@ from handlers.querystring_handler import QuerystringHandler
 
 class HomeHandler(RequestHandler):
 
-    def initialize(self):
-        pass
-
     def get(self):
         return "OK"
 

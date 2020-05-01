@@ -81,18 +81,13 @@ class RequestHandler(object):
         self.__query_strings = {}
 
         self.__params_init()
+        self.initialize()
 
         _http_method = environ['REQUEST_METHOD']
-        if _http_method == 'GET' and hasattr(self, 'get'):
-            if hasattr(self, 'initialize'):
-                self.initialize()
-
+        if _http_method == 'GET':
             _contents = self.get()
 
-        elif _http_method == 'POST' and hasattr(self, 'post'):
-            if hasattr(self, 'initialize'):
-                self.initialize()
-
+        elif _http_method == 'POST':
             _contents = self.post()
 
         else:
