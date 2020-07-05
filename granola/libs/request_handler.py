@@ -1,10 +1,12 @@
+import traceback
 from urllib.parse import parse_qs
 
 HTTP_STATUS = {
     200: '200 OK',
     400: '400 Bad Request',
     404: '404 NotFound',
-    405: '405 Method Not Allowed'
+    405: '405 Method Not Allowed',
+    500: '500 Internal Server Error'
 }
 
 
@@ -41,7 +43,7 @@ class RequestHandler(object):
 
     def set_status_code(self, val):
         self.__status_code = val
-        
+
     def set_content_length(self):
         self.__set_content_length = True
 
@@ -66,7 +68,7 @@ class RequestHandler(object):
         self.set_status_code(405)
         return "405 Method Not Allowed"
 
-    def entry(self, environ, start_response):
+    def entry(self, environ, start_response, logger=None):
 
         self.__environ = environ
 
@@ -84,16 +86,25 @@ class RequestHandler(object):
         self.initialize()
 
         _http_method = environ['REQUEST_METHOD']
-        if _http_method == 'GET':
-            _contents = self.get()
 
-        elif _http_method == 'POST':
-            _contents = self.post()
+        try:
+            if _http_method == 'GET':
+                _contents = self.get()
 
-        else:
-            self.__status_code = 405
-            _contents = HTTP_STATUS[405]
-        
+            elif _http_method == 'POST':
+                _contents = self.post()
+
+            else:
+                self.__status_code = 405
+                _contents = HTTP_STATUS[405]
+
+        except Exception as e:
+            self.__status_code = 500
+            _contents = HTTP_STATUS[500]
+
+            if logger:
+                logger.error(traceback.format_exc())
+
         bcontent = bytes(_contents, encoding='UTF-8')
         headers = [
             ('Content-Type', self.__contents_type)
@@ -101,7 +112,7 @@ class RequestHandler(object):
 
         if self.__set_content_length:
             headers.append(('Content-Length', str(len(bcontent))))
-            
+
         start_response(
             HTTP_STATUS.get(self.__status_code, 'UNKNOWN STATUS'),
             headers
