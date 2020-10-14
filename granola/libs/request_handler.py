@@ -53,6 +53,9 @@ class RequestHandler(object):
     def get_query_string(self, key):
         return self.__query_strings.get(key, None)
 
+    def get_query_strings(self):
+        return self.__query_strings
+
     def __params_init(self):
         _params = self.__environ['QUERY_STRING']
         self.__params = parse_qs(_params)
